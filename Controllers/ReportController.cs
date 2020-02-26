@@ -14,12 +14,26 @@ namespace Report.Controllers {
 
         [EnableCors("AllowOrigin")]
         [HttpPost]
-        public async Task<SaveFileResult> ReplaceOpenXML([FromBody] dynamic content) {
+        public SaveFileResult ReplaceOpenXML([FromBody] dynamic content) {
             var pdf = new PDF();
-            var targetPdfName = pdf.CreatePDFReport();
+            var targetPdfName = pdf.CreatePDFReport(content);
             var returnResponse = new SaveFileResult();
             returnResponse.FileName = targetPdfName;
             return returnResponse;
+        }
+    }
+
+    [Route("api/test")]
+    [ApiController]
+    public class ReportController1 : Controller {
+        public string config(string name) {
+            return AppSettings.Configuration.GetSection(name).Value;
+        }
+
+        [EnableCors("AllowOrigin")]
+        [HttpGet]
+        public string Test() {
+            return "HELLO";
         }
     }
 }
