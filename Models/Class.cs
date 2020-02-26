@@ -15,21 +15,25 @@ namespace Report {
     }
 
     public partial class SummaryReportResults {
+        public object this[string propertyName] {
+            get { return this.GetType().GetProperty(propertyName).GetValue(this, null); }
+            set { this.GetType().GetProperty(propertyName).SetValue(this, value, null); }
+        }
+
         [JsonProperty("airquality_forestAnnual")]
-        [JsonConverter(typeof(ParseStringConverter))]
-        public long AirqualityForestAnnual { get; set; }
+        public string airquality_forestAnnual { get; set; }
 
         [JsonProperty("airquality_forestValuePerAcre")]
-        public string AirqualityForestValuePerAcre { get; set; }
+        public string airquality_forestValuePerAcre { get; set; }
 
         [JsonProperty("airquality_ruralThousandDollarsPerYear")]
-        public string AirqualityRuralThousandDollarsPerYear { get; set; }
+        public string airquality_ruralThousandDollarsPerYear { get; set; }
 
         [JsonProperty("airquality_totalThousandDollarsPerYear")]
-        public string AirqualityTotalThousandDollarsPerYear { get; set; }
+        public string airquality_totalThousandDollarsPerYear { get; set; }
 
         [JsonProperty("airquality_urbanThousandDollarsPerYear")]
-        public string AirqualityUrbanThousandDollarsPerYear { get; set; }
+        public string airquality_urbanThousandDollarsPerYear { get; set; }
 
         [JsonProperty("aoiForestAcres")]
         public string AoiForestAcres { get; set; }
@@ -38,83 +42,82 @@ namespace Report {
         public string AoiRuralAcres { get; set; }
 
         [JsonProperty("aoiUrbanAcres")]
-        [JsonConverter(typeof(ParseStringConverter))]
-        public long AoiUrbanAcres { get; set; }
+        public string AoiUrbanAcres { get; set; }
 
         [JsonProperty("biodiversity_forestAnnual")]
-        public string BiodiversityForestAnnual { get; set; }
+        public string biodiversity_forestAnnual { get; set; }
 
         [JsonProperty("biodiversity_forestValuePerAcre")]
-        public string BiodiversityForestValuePerAcre { get; set; }
+        public string biodiversity_forestValuePerAcre { get; set; }
 
         [JsonProperty("biodiversity_ruralThousandDollarsPerYear")]
-        public string BiodiversityRuralThousandDollarsPerYear { get; set; }
+        public string biodiversity_ruralThousandDollarsPerYear { get; set; }
 
         [JsonProperty("biodiversity_totalThousandDollarsPerYear")]
-        public string BiodiversityTotalThousandDollarsPerYear { get; set; }
+        public string biodiversity_totalThousandDollarsPerYear { get; set; }
 
         [JsonProperty("biodiversity_urbanThousandDollarsPerYear")]
-        public string BiodiversityUrbanThousandDollarsPerYear { get; set; }
+        public string biodiversity_urbanThousandDollarsPerYear { get; set; }
 
         [JsonProperty("carbon_forestAnnual")]
-        public string CarbonForestAnnual { get; set; }
+        public string carbon_forestAnnual { get; set; }
 
         [JsonProperty("carbon_forestValuePerAcre")]
-        public string CarbonForestValuePerAcre { get; set; }
+        public string carbon_forestValuePerAcre { get; set; }
 
         [JsonProperty("carbon_ruralThousandDollarsPerYear")]
-        public string CarbonRuralThousandDollarsPerYear { get; set; }
+        public string carbon_ruralThousandDollarsPerYear { get; set; }
 
         [JsonProperty("carbon_totalThousandDollarsPerYear")]
-        public string CarbonTotalThousandDollarsPerYear { get; set; }
+        public string carbon_totalThousandDollarsPerYear { get; set; }
 
         [JsonProperty("carbon_urbanThousandDollarsPerYear")]
-        public string CarbonUrbanThousandDollarsPerYear { get; set; }
+        public string carbon_urbanThousandDollarsPerYear { get; set; }
 
         [JsonProperty("cultural_forestAnnual")]
-        public string CulturalForestAnnual { get; set; }
+        public string cultural_forestAnnual { get; set; }
 
         [JsonProperty("cultural_forestValuePerAcre")]
-        public string CulturalForestValuePerAcre { get; set; }
+        public string cultural_forestValuePerAcre { get; set; }
 
         [JsonProperty("cultural_ruralThousandDollarsPerYear")]
-        public string CulturalRuralThousandDollarsPerYear { get; set; }
+        public string cultural_ruralThousandDollarsPerYear { get; set; }
 
         [JsonProperty("cultural_totalThousandDollarsPerYear")]
-        public string CulturalTotalThousandDollarsPerYear { get; set; }
+        public string cultural_totalThousandDollarsPerYear { get; set; }
 
         [JsonProperty("cultural_urbanThousandDollarsPerYear")]
-        public string CulturalUrbanThousandDollarsPerYear { get; set; }
+        public string cultural_urbanThousandDollarsPerYear { get; set; }
 
         [JsonProperty("total_forestAnnual")]
-        public string TotalForestAnnual { get; set; }
+        public string total_forestAnnual { get; set; }
 
         [JsonProperty("total_forestValuePerAcre")]
-        public string TotalForestValuePerAcre { get; set; }
+        public string total_forestValuePerAcre { get; set; }
 
         [JsonProperty("total_ruralThousandDollarsPerYear")]
-        public string TotalRuralThousandDollarsPerYear { get; set; }
+        public string total_ruralThousandDollarsPerYear { get; set; }
 
         [JsonProperty("total_totalThousandDollarsPerYear")]
-        public string TotalTotalThousandDollarsPerYear { get; set; }
+        public string total_totalThousandDollarsPerYear { get; set; }
 
         [JsonProperty("total_urbanThousandDollarsPerYear")]
-        public string TotalUrbanThousandDollarsPerYear { get; set; }
+        public string total_urbanThousandDollarsPerYear { get; set; }
 
         [JsonProperty("watershed_forestAnnual")]
-        public string WatershedForestAnnual { get; set; }
+        public string watershed_forestAnnual { get; set; }
 
         [JsonProperty("watershed_forestValuePerAcre")]
-        public string WatershedForestValuePerAcre { get; set; }
+        public string watershed_forestValuePerAcre { get; set; }
 
         [JsonProperty("watershed_ruralThousandDollarsPerYear")]
-        public string WatershedRuralThousandDollarsPerYear { get; set; }
+        public string watershed_ruralThousandDollarsPerYear { get; set; }
 
         [JsonProperty("watershed_totalThousandDollarsPerYear")]
-        public string WatershedTotalThousandDollarsPerYear { get; set; }
+        public string watershed_totalThousandDollarsPerYear { get; set; }
 
         [JsonProperty("watershed_urbanThousandDollarsPerYear")]
-        public string WatershedUrbanThousandDollarsPerYear { get; set; }
+        public string watershed_urbanThousandDollarsPerYear { get; set; }
     }
 
     public partial class SummaryResult {
@@ -175,7 +178,7 @@ namespace Report {
             if (Int64.TryParse(value, out l)) {
                 return l;
             }
-            throw new Exception("Cannot unmarshal type long");
+            throw new Exception("Cannot unmarshal type long ");
         }
 
         public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer) {

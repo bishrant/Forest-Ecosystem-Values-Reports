@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Report.Helpers;
 
 namespace Report.Helpers
 {
@@ -15,6 +16,27 @@ namespace Report.Helpers
     {
         public string config(string name) {
             return AppSettings.Configuration.GetSection(name).Value;
+        }
+
+        public void ConvertDocxToPDF(string docPath) {
+            Application app = new Application();
+            string pdfPath = docPath.Replace(".docx", ".pdf");
+            Document wordDoc = null;
+            try {
+                wordDoc = app.Documents.Open(docPath);
+                wordDoc.ExportAsFixedFormat(pdfPath, WdExportFormat.wdExportFormatPDF);
+                wordDoc.Close();
+                app.Quit();
+                wordDoc = null;
+                app = null;
+            } catch (Exception ex) {
+                throw (ex);
+            } finally {
+                if (wordDoc != null) { wordDoc.Close(); wordDoc = null; }
+                if (app != null) { app.Quit(); app = null; }
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
         }
 
         public static void SearchAndReplace(string document, Dictionary<string, string> myDictionary) {
@@ -40,14 +62,17 @@ namespace Report.Helpers
             }
         }
 
-        public string CreatePDFReport()
+        public string CreatePDFReport(dynamic reportData)
         {
-            ReportData data = ReportData.FromJson("{\"summaryReportResults\":{\"airquality_forestAnnual\":\"0\",\"airquality_forestValuePerAcre\":\"0.0\",\"airquality_ruralThousandDollarsPerYear\":\"-\",\"airquality_totalThousandDollarsPerYear\":\"0.0\",\"airquality_urbanThousandDollarsPerYear\":\"0.0000\",\"aoiForestAcres\":\"15,742\",\"aoiRuralAcres\":\"15,742\",\"aoiUrbanAcres\":\"0\",\"biodiversity_forestAnnual\":\"3.7 million\",\"biodiversity_forestValuePerAcre\":\"232.0\",\"biodiversity_ruralThousandDollarsPerYear\":\"3,652.2\",\"biodiversity_totalThousandDollarsPerYear\":\"3,652.2\",\"biodiversity_urbanThousandDollarsPerYear\":\"0.0000\",\"carbon_forestAnnual\":\"1.4 million\",\"carbon_forestValuePerAcre\":\"88.8\",\"carbon_ruralThousandDollarsPerYear\":\"1,397.4\",\"carbon_totalThousandDollarsPerYear\":\"1,397.4\",\"carbon_urbanThousandDollarsPerYear\":\"0.0000\",\"cultural_forestAnnual\":\"14.2 million\",\"cultural_forestValuePerAcre\":\"899.8\",\"cultural_ruralThousandDollarsPerYear\":\"14,164.8\",\"cultural_totalThousandDollarsPerYear\":\"14,164.8\",\"cultural_urbanThousandDollarsPerYear\":\"0.0000\",\"total_forestAnnual\":\"23.2 million\",\"total_forestValuePerAcre\":\"1,476.1\",\"total_ruralThousandDollarsPerYear\":\"23,236.8\",\"total_totalThousandDollarsPerYear\":\"23,236.8\",\"total_urbanThousandDollarsPerYear\":\"0.0000\",\"watershed_forestAnnual\":\"4.0 million\",\"watershed_forestValuePerAcre\":\"255.5\",\"watershed_ruralThousandDollarsPerYear\":\"4,022.4\",\"watershed_totalThousandDollarsPerYear\":\"4,022.4\",\"watershed_urbanThousandDollarsPerYear\":\"0.0000\"},\"summaryResults\":[{\"AverageValueUnits\":\"$/acre/year\",\"TotalValueUnits\":\"thousand $/year\",\"ecosystemService\":\"airquality\",\"forestAverageValue\":\"0.0\",\"forestTotalValue\":\"0.0\",\"ruralAverageValue\":\"-\",\"ruralTotalValue\":\"-\",\"urbanAverageValue\":\"0.0\",\"urbanTotalValue\":\"0.0000\"},{\"AverageValueUnits\":\"$/acre/year\",\"TotalValueUnits\":\"thousand $/year\",\"ecosystemService\":\"biodiversity\",\"forestAverageValue\":\"232.0\",\"forestTotalValue\":\"3,652.2\",\"ruralAverageValue\":\"232.0\",\"ruralTotalValue\":\"3,652.2\",\"urbanAverageValue\":\"0.0\",\"urbanTotalValue\":\"0.0000\"},{\"AverageValueUnits\":\"$/acre/year\",\"TotalValueUnits\":\"thousand $/year\",\"ecosystemService\":\"carbon\",\"forestAverageValue\":\"88.8\",\"forestTotalValue\":\"1,397.4\",\"ruralAverageValue\":\"88.8\",\"ruralTotalValue\":\"1,397.4\",\"urbanAverageValue\":\"0.0\",\"urbanTotalValue\":\"0.0000\"},{\"AverageValueUnits\":\"$/acre/year\",\"TotalValueUnits\":\"thousand $/year\",\"ecosystemService\":\"cultural\",\"forestAverageValue\":\"899.8\",\"forestTotalValue\":\"14,164.8\",\"ruralAverageValue\":\"899.8\",\"ruralTotalValue\":\"14,164.8\",\"urbanAverageValue\":\"0.0\",\"urbanTotalValue\":\"0.0000\"},{\"AverageValueUnits\":\"$/acre/year\",\"TotalValueUnits\":\"thousand $/year\",\"ecosystemService\":\"watershed\",\"forestAverageValue\":\"255.5\",\"forestTotalValue\":\"4,022.4\",\"ruralAverageValue\":\"255.5\",\"ruralTotalValue\":\"4,022.4\",\"urbanAverageValue\":\"0.0\",\"urbanTotalValue\":\"0.0000\"},{\"AverageValueUnits\":\"$/acre/year\",\"TotalValueUnits\":\"thousand $/year\",\"ecosystemService\":\"total\",\"forestAverageValue\":\"1,476.1\",\"forestTotalValue\":\"23,236.8\",\"ruralAverageValue\":\"1,476.1\",\"ruralTotalValue\":\"23,236.8\",\"urbanAverageValue\":\"0.0\",\"urbanTotalValue\":\"0.0000\"}]}");
+            var jsonStr = reportData.GetProperty("stats").GetString();
+            string mapURL = reportData.GetProperty("mapURL").GetString();
+            ReportData data = ReportData.FromJson(jsonStr);
             string directory = Directory.GetCurrentDirectory();
             var setting = new OpenSettings();
             setting.AutoSave = false;
             var dateUtils = new DateUtils();
             var stringUtils = new StringUtils();
+            ReportUtils ReportUtils = new ReportUtils();
             string fileName = config("filePrefix")+ "_" + DateTime.Now.ToString("MM-dd-yyyy") + "_" + DateTime.Now.ToString("HHmmss") + ".docx";
             string tempFileName = directory + "\\template\\" + fileName;
             string templateFileName = directory + "\\template\\"+ config("template");
@@ -55,7 +80,19 @@ namespace Report.Helpers
                 File.Copy(templateFileName, tempFileName);
             } catch (Exception e) { Console.WriteLine(e); }
 
+            ReportUtils.ReplaceImage(tempFileName, mapURL, config("mapImageId"));
+
             SummaryReportResults summary = data.SummaryReportResults;
+
+            // get the individual summary objects for replacing to the openxml later
+            SummaryResult[] summaryArray = data.SummaryResults;
+            SummaryResult airquality = summaryArray.Where(s => s.EcosystemService == "airquality").ToArray()[0];
+            SummaryResult biodiversity = summaryArray.Where(s => s.EcosystemService == "biodiversity").ToArray()[0];
+            SummaryResult carbon = summaryArray.Where(s => s.EcosystemService == "carbon").ToArray()[0];
+            SummaryResult cultural = summaryArray.Where(s => s.EcosystemService == "cultural").ToArray()[0];
+            SummaryResult watershed = summaryArray.Where(s => s.EcosystemService == "watershed").ToArray()[0];
+            SummaryResult total = summaryArray.Where(s => s.EcosystemService == "total").ToArray()[0];
+
 
             //Create report params dictionary
             Dictionary<string, string> reportParamsDict = new Dictionary<string, string>();
@@ -63,7 +100,35 @@ namespace Report.Helpers
             reportParamsDict.Add("ZZAoiUrbanAcresZZ", ""+summary.AoiUrbanAcres);
             reportParamsDict.Add("ZZAoiRuralAcresZZ", summary.AoiRuralAcres);
 
+            reportParamsDict.Add("ZZairqualityAvgZZ", airquality.ForestAverageValue);
+            reportParamsDict.Add("ZZairqualityTotalZZ", airquality.ForestTotalValue);
+
+            reportParamsDict.Add("ZZbiodiversityAvgZZ", biodiversity.ForestAverageValue);
+            reportParamsDict.Add("ZZbiodiversityTotalZZ", biodiversity.ForestTotalValue);
+
+            reportParamsDict.Add("ZZcarbonAvgZZ", carbon.ForestAverageValue);
+            reportParamsDict.Add("ZZcarbonTotalZZ", carbon.ForestTotalValue);
+
+            reportParamsDict.Add("ZZculturalAvgZZ", cultural.ForestAverageValue);
+            reportParamsDict.Add("ZZculturalTotalZZ", cultural.ForestTotalValue);
+
+            reportParamsDict.Add("ZZwatershedAvgZZ", watershed.ForestAverageValue);
+            reportParamsDict.Add("ZZwatershedTotalZZ", watershed.ForestTotalValue);
+
+            reportParamsDict.Add("ZZtotalAvgZZ", total.ForestAverageValue);
+            reportParamsDict.Add("ZZtotalTotalZZ", total.ForestTotalValue);
+
+            string[] ecosystems = new string[] { "airquality", "biodiversity", "carbon", "cultural", "watershed", "total" };
+            foreach (string eco in ecosystems) {
+                reportParamsDict.Add("ZZ"+eco+"UrbanZZ", (string)summary[eco + "_urbanThousandDollarsPerYear"]);
+                reportParamsDict.Add("ZZ" + eco + "RuralZZ", (string)summary[eco + "_ruralThousandDollarsPerYear"]);
+                reportParamsDict.Add("ZZ" + eco + "Total1ZZ", (string)summary[eco + "_totalThousandDollarsPerYear"]);
+            }
+
             SearchAndReplace(tempFileName, reportParamsDict);
+
+            ConvertDocxToPDF(tempFileName);
+            string pdfPath = tempFileName.Replace(".docx", ".pdf");
 
             ////ImagePart imagePartLandOwner;
             //using (WordprocessingDocument doc = WordprocessingDocument.Open(tempFileName, true)) {
@@ -106,7 +171,7 @@ namespace Report.Helpers
             //worddoc.Close();
             //app.Quit();
             //File.Delete(tempFileName);
-            return tempFileName;
+            return pdfPath;
         }
     }
 }

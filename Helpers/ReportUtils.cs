@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using DocumentFormat.OpenXml.Wordprocessing;
 
-namespace Survey123EmailNotification.Helpers
+namespace Report.Helpers
 {
     public class ReportUtils
     {
@@ -85,6 +85,26 @@ namespace Survey123EmailNotification.Helpers
 
                 mainPart.Document.Save();
             }
+        }
+
+        public void ReplaceImage(string destinationFile, string mapImageUrl, string imageId) {
+            WordprocessingDocument m_wordProcessingDocument = WordprocessingDocument.Open(destinationFile, true);
+            MainDocumentPart m_mainDocPart = m_wordProcessingDocument.MainDocumentPart;
+
+            // go through the document and pull out the inline image elements
+            IEnumerable<Drawing> imageElements = from run in m_mainDocPart.Document.Descendants<DocumentFormat.OpenXml.Wordprocessing.Run>()
+                                                 where run.Descendants<Drawing>().First() != null
+                                                 select run.Descendants<Drawing>().First();
+
+            ImagePart imagePart = (ImagePart)m_mainDocPart.GetPartById(imageId);
+
+            var webClient = new WebClient();
+            byte[] m_imageInBytes = webClient.DownloadData(mapImageUrl);
+            BinaryWriter writer = new BinaryWriter(imagePart.GetStream());
+            writer.Write(m_imageInBytes);
+            writer.Close();
+
+            m_wordProcessingDocument.Close();
         }
 
         private bool IsSectionProps(ParagraphProperties pPr) {
