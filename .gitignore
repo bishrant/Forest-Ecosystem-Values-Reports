@@ -1,0 +1,7 @@
+.git
+.vs
+[Dd]ebug/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+*.nupkg
