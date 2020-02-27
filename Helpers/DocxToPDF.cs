@@ -4,7 +4,7 @@ using System;
 namespace Report.Helpers {
     public class DocxToPDF {
         public void ConvertDocxToPDF(string docPath) {
-            Application app = new Application();
+            Application app = new Microsoft.Office.Interop.Word.Application();
             string pdfPath = docPath.Replace(".docx", ".pdf");
             Document wordDoc = null;
            try {

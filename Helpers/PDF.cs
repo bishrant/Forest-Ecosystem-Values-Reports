@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace Report.Helpers
 {
@@ -12,9 +13,9 @@ namespace Report.Helpers
             return AppSettings.Configuration.GetSection(name).Value;
         }
 
-        public string CreatePDFReport(dynamic reportData) {
-            var jsonStr = reportData.GetProperty("stats").GetString();
-            string mapURL = reportData.GetProperty("mapURL").GetString();
+        public string CreatePDFReport(dynamic reportData, string serverAddr) {
+            var jsonStr = reportData.GetValue("stats").ToString();
+            string mapURL = reportData.GetValue("mapURL").ToString();
             ReportData data = ReportData.FromJson(jsonStr);
             string directory = Directory.GetCurrentDirectory();
             var setting = new OpenSettings();
@@ -22,9 +23,9 @@ namespace Report.Helpers
             var dateUtils = new DateUtils();
             StringUtils stringUtils = new StringUtils();
             ReportUtils ReportUtils = new ReportUtils();
-            string fileName = config("filePrefix")+ "_" + DateTime.Now.ToString("MM-dd-yyyy") + "_" + DateTime.Now.ToString("HHmmss") + ".docx";
-            string tempFileName = directory + "\\template\\" + fileName;
-            string templateFileName = directory + "\\template\\"+ config("template");
+            string fileName = config("filePrefix")+ "_" + DateTime.Now.ToString("MM-dd-yyyy") + "_" + DateTime.Now.ToString("HHmmss");
+            string tempFileName = directory + "\\wwwroot\\reports\\" + fileName + ".docx";
+            string templateFileName = directory + "\\wwwroot\\template\\"+ config("template");
             try  {
                 File.Copy(templateFileName, tempFileName);
             } catch (Exception e) { throw(e); }
@@ -76,7 +77,8 @@ namespace Report.Helpers
             stringUtils.SearchAndReplace(tempFileName, reportParamsDict);
             DocxToPDF PDFConvertor = new DocxToPDF();
             PDFConvertor.ConvertDocxToPDF(tempFileName);
-            string pdfPath = tempFileName.Replace(".docx", ".pdf");
+            string pdfPath = serverAddr+ "reports/" + fileName + ".pdf";;
+
             return pdfPath;
         }
     }
