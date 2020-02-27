@@ -1,9 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Report {
     public class Startup {
@@ -18,7 +24,7 @@ namespace Report {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
@@ -29,24 +35,24 @@ namespace Report {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostEnvironment env) {
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             } else {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseRouting();
+            //app.UseRouting();
             app.UseCors(MyAllowSpecificOrigins);
             app.UseDeveloperExceptionPage();
             app.UseFileServer();
             app.UseStaticFiles();
             app.UseHttpsRedirection();
+            app.UseMvc();
 
-            
-            app.UseEndpoints(endpoints => {
-                endpoints.MapControllers();
-            });
+            //app.UseEndpoints(endpoints => {
+            //    endpoints.MapControllers();
+            //});
 
             //app.UseMvc();
         }
