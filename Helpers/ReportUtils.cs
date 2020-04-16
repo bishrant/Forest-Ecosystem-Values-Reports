@@ -34,6 +34,23 @@ namespace Report.Helpers
             }
         }
 
+        public void DeleteOldFiles () {
+            string directory = Directory.GetCurrentDirectory();
+            var dir = new DirectoryInfo(directory + "\\wwwroot\\reports\\");
+            FileInfo[] files = dir.GetFiles();
+            for (int i = 0; i < files.Length; i++) {
+                FileInfo file = files[i];
+                if (file.LastAccessTime < DateTime.Now.AddDays(-1)) {
+                    try {
+                        File.Delete(file.FullName);
+                    } catch (Exception e) {
+                        Console.WriteLine(e.Message);
+                    }
+                }
+
+            }
+        }
+
         // To search and replace content in a document part.
         public void SearchAndReplace(string document, Dictionary<string, string> myDictionary)
         {

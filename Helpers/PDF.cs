@@ -78,7 +78,7 @@ namespace Report.Helpers
             DocxToPDF PDFConvertor = new DocxToPDF();
             PDFConvertor.ConvertDocxToPDF(tempFileName);
             string pdfPath = serverAddr+ "reports/" + fileName + ".pdf";;
-
+            File.Delete(tempFileName);
             return pdfPath;
         }
     }

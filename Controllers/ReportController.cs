@@ -21,6 +21,9 @@ namespace Report.Controllers {
             var targetPdfName = pdf.CreatePDFReport(content, serverAddr);
             var returnResponse = new SaveFileResult();
             returnResponse.FileName = targetPdfName;
+            ReportUtils reportUtils = new ReportUtils();
+            reportUtils.DeleteOldFiles();
+
             return returnResponse;
         }
     }
