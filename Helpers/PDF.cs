@@ -50,22 +50,23 @@ namespace Report.Helpers
             reportParamsDict.Add("ZZAoiRuralAcresZZ", summary.AoiRuralAcres);
 
             reportParamsDict.Add("ZZairqualityAvgZZ", airquality.ForestAverageValue);
-            reportParamsDict.Add("ZZairqualityTotalZZ", airquality.ForestTotalValue);
+            reportParamsDict.Add("ZZairqualityTotalZZ", airquality.ForestTotalValue+ " thousand");
 
             reportParamsDict.Add("ZZbiodiversityAvgZZ", biodiversity.ForestAverageValue);
-            reportParamsDict.Add("ZZbiodiversityTotalZZ", biodiversity.ForestTotalValue);
+            reportParamsDict.Add("ZZbiodiversityTotalZZ", biodiversity.ForestTotalValue + " thousand");
 
             reportParamsDict.Add("ZZcarbonAvgZZ", carbon.ForestAverageValue);
-            reportParamsDict.Add("ZZcarbonTotalZZ", carbon.ForestTotalValue);
+            reportParamsDict.Add("ZZcarbonTotalZZ", carbon.ForestTotalValue + " thousand");
 
             reportParamsDict.Add("ZZculturalAvgZZ", cultural.ForestAverageValue);
-            reportParamsDict.Add("ZZculturalTotalZZ", cultural.ForestTotalValue);
+            reportParamsDict.Add("ZZculturalTotalZZ", cultural.ForestTotalValue + " thousand");
 
             reportParamsDict.Add("ZZwatershedAvgZZ", watershed.ForestAverageValue);
-            reportParamsDict.Add("ZZwatershedTotalZZ", watershed.ForestTotalValue);
+            reportParamsDict.Add("ZZwatershedTotalZZ", watershed.ForestTotalValue + " thousand");
 
             reportParamsDict.Add("ZZtotalAvgZZ", total.ForestAverageValue);
             reportParamsDict.Add("ZZtotalTotalZZ", total.ForestTotalValue);
+            reportParamsDict.Add("ZZtotalTotalThousandZZ", total.ForestTotalValue + " thousand");
 
             string[] ecosystems = new string[] { "airquality", "biodiversity", "carbon", "cultural", "watershed", "total"};
             foreach (string eco in ecosystems) {
